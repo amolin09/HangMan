@@ -5,11 +5,11 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-let wordBank = ['NINJA', 'SAMURAI', 'GEISHA', 'SUSHI', 'ISLAND', 'SUMO', 'RAMEN', 'CHOPSTICKS', 'KIMONO', 'ANIME', 'ORIGAMI', 'RICE', 'KATANA', 'MOUNTAINS', 'SHOGUN', 'NINTENDO', 'SEGA', 'TOKYO', 'HAIKU']  //if we want different themes, I will have multiple arrays for the word banks. we'll change which array to pick the word from depending on the user's selected theme.
+let wordBank = ['NINJA', 'SAMURAI', 'GEISHA', 'SUSHI', 'ISLAND', 'SUMO', 'RAMEN', 'CHOPSTICKS', 'KIMONO', 'ANIME', 'ORIGAMI', 'RICE', 'KATANA', 'MOUNTAINS', 'SHOGUN', 'NINTENDO', 'SEGA', 'TOKYO', 'HAIKU', 'SHOGI']  //if we want different themes, I will have multiple arrays for the word banks. we'll change which array to pick the word from depending on the user's selected theme.
 let selectedWord = '' //this stores the word the user is trying to guess. I suppose it could be named better
 let guessWord = [] //as the user guesses letters, the correct letters will be stored in this array
 let correctWord = ''//in order to check the selectedWord with guessWord, we need to convert guessWord into a string. this variable holds that string.
-let usedLetters = []//as the user guesses letters, we don't want them to accidentally guess a previous letter. this array stores the letters the user enters and compares them to future guesses
+let usedLetters = []//as the user guesses letters, we don't want them to accidentally guess a previous letter. This array stores the letters the user enters and compares them to future guesses
 let turns = 6// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
 let gameOver = false//determines if the game is over either by winning or losing. prevents user from continuing to guess after the game is over. streamlines UX
 
@@ -27,17 +27,40 @@ const getRandomWord = (wordsArray) =>{// function used to select a word from the
   }
 }
 
+const restartFields = () =>{//if replaying the game, the original arrays and variables need to be reset so that they don't carry over to the next game
+  turns = 6
+  gameOver = false
+  usedLetters = []
+  guessWord = []
+
+  for(let i = 0; i < selectedWord.length; i++){
+    guessWord[i] = "_"
+  }
+
+}
+
+const replay = () =>{//this prompt is used to play the game again if the user wants. I had to call this twice so I thought it would look cleaner with all functions called in a single function
+  rl.question('Play again? Y or N: ', (restart) => { 
+    const playAgain = restart.toUpperCase()
+     if(playAgain == "Y"){
+       getRandomWord(wordBank)
+       restartFields()
+       getPrompt()
+     }
+     });
+}
+
 const printBoard = () =>{// prints out the board on terminal, not needed when we switch to DOM
-  let wordBoard = guessWord.join(' ')
-  // console.log('------------------------------------------')
+  const displayLength = selectedWord.length
   console.log('\nLives: ' + turns)
+  console.log('This word has ' + displayLength + ' letters.\n')
   console.log(wordBoard + '\n')
   //console.log(selectedWord) uncomment me if you want to see the answer displayed on the screen
 }
 
 const hangMan = (guess) =>{
   let upperGuess = guess.toUpperCase()
-  console.log('------------------------------------------')
+  console.log('\n------------------------------------------\n')
 
   if(upperGuess.length > 1){ // prevents the user from entering an input longer than a single character
     console.log('Not a valid guess. Try again')
@@ -77,11 +100,13 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
   if(correctWord == selectedWord){//conmpares correctWord to see if it matches the selectedWord. if so, the game is won
     console.log('You got the right word!')
     gameOver = true
+    replay()
   }
 
   else if(turns < 1){//runs out of lives, game ends, selectedWord is displyed
     console.log('You ran out of lives! The answer was: ' + selectedWord )
     gameOver = true
+    replay()
   }
 
   if(!gameOver){//as long as gameOver isn't true, the game continues on
