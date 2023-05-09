@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hangman</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="./index.js" defer></script>
   
 </head>
 <body>
@@ -12,15 +13,28 @@
     <div class="title">
       <img src="./Images/Title.png" alt="image not found">
     </div>
-    <div class="hang-man-picture">
-      <img src="./Images/Hangman-0.png" alt="image not found">
+    <div id="turns-div">
+
     </div>
-    <div class="word">
-      <span>_</span>
-      <span>_</span>
-      <span>_</span>
-      <span>_</span>
-      <span>_</span>
+    <div id="feedback-div">
+
+    </div>
+    <div id="win-or-lose-div">
+      
+    </div>
+    <div class="hang-man-picture">
+      <img src="./Images/Hangman-0.png" id="hang-man-lives" alt="image not found">
+    </div>
+    <div id="word">
+      
+    </div>
+
+    <div id="user-input-div">
+      <input type="text" id="user-guess">
+      <button onclick="getPrompt()">Guess!</button>
+    </div>
+    <div id="restart-div">
+      <button id="restart-button" onclick="replay()">Restart</button>
     </div>
   </div>
 </body>
