@@ -51,6 +51,7 @@ const replay = () =>{//this prompt is used to play the game again if the user wa
 }
 
 const printBoard = () =>{// prints out the board on terminal, not needed when we switch to DOM
+  let wordBoard = guessWord.join(' ')
   const displayLength = selectedWord.length
   console.log('\nLives: ' + turns)
   console.log('This word has ' + displayLength + ' letters.\n')
@@ -62,7 +63,7 @@ const hangMan = (guess) =>{
   let upperGuess = guess.toUpperCase()
   console.log('\n------------------------------------------\n')
 
-  if(upperGuess.length > 1){ // prevents the user from entering an input longer than a single character
+  if(upperGuess.length > 1 || upperGuess.length < 1){ // prevents the user from entering an input longer than a single character
     console.log('Not a valid guess. Try again')
   }
   
