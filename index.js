@@ -51,6 +51,7 @@ const restartFields = () =>{//if replaying the game, the original arrays and var
   while(winnerDivElement.hasChildNodes()){
     winnerDivElement.removeChild(winnerDivElement.firstChild)
   }
+  resetFeedBackDisplay()
 
 }
 
@@ -58,8 +59,8 @@ const replay = () =>{//this prompt is used to play the game again if the user wa
     
       getWordArray() 
       getRandomWord(fullWordBank[selectedWordBank])
-       restartFields()
-       printBoard()
+      restartFields()
+      printBoard()
 
 }
 
@@ -117,13 +118,17 @@ const printBoard = () =>{// prints out the board on terminal, not needed when we
 }
 
 const setFeedBackDisplay = (text) => {
-  while(feedBackDiv.hasChildNodes()){
-    feedBackDiv.removeChild(feedBackDiv.firstChild)
-  }
+  resetFeedBackDisplay()
   const feedBackElement = document.createElement('span')
   feedBackElement.appendChild(text)
   feedBackDiv.appendChild(feedBackElement)
   
+}
+
+const resetFeedBackDisplay = () =>{
+  while(feedBackDiv.hasChildNodes()){
+    feedBackDiv.removeChild(feedBackDiv.firstChild)
+  }
 }
 
 const hangMan = (guess) =>{
@@ -188,12 +193,10 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
       if(correctWord == selectedWord){//conmpares correctWord to see if it matches the selectedWord. if so, the game is won
         
         let winnerText = document.createTextNode('You got the right word!')
-        while(feedBackDiv.hasChildNodes()){
-          feedBackDiv.removeChild(feedBackDiv.firstChild)
-        }
         while(turnsCounterDiv.hasChildNodes()){
           turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
         }
+        resetFeedBackDisplay()
         winOrLose(winnerText)
         console.log('You got the right word!')
         gameOver = true
@@ -205,9 +208,7 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
         while(turnsCounterDiv.hasChildNodes()){
           turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
         }
-        while(feedBackDiv.hasChildNodes()){
-          feedBackDiv.removeChild(feedBackDiv.firstChild)
-        }
+        resetFeedBackDisplay()
         winOrLose(gameOverText)
         console.log('You ran out of lives! The answer was: ' + selectedWord )
         gameOver = true
