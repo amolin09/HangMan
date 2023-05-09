@@ -5,7 +5,9 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-let wordBank = ['NINJA', 'SAMURAI', 'GEISHA', 'SUSHI', 'ISLAND', 'SUMO', 'RAMEN', 'CHOPSTICKS', 'KIMONO', 'ANIME', 'ORIGAMI', 'RICE', 'KATANA', 'MOUNTAINS', 'SHOGUN', 'NINTENDO', 'SEGA', 'TOKYO', 'HAIKU', 'SHOGI']  //if we want different themes, I will have multiple arrays for the word banks. we'll change which array to pick the word from depending on the user's selected theme.
+const japanWordBank = ['NINJA', 'SAMURAI', 'GEISHA', 'SUSHI', 'ISLAND', 'SUMO', 'RAMEN', 'CHOPSTICKS', 'KIMONO', 'ANIME', 'ORIGAMI', 'RICE', 'KATANA', 'MOUNTAINS', 'SHOGUN', 'NINTENDO', 'SEGA', 'TOKYO', 'HAIKU', 'SHOGI']  //if we want different themes, I will have multiple arrays for the word banks. we'll change which array to pick the word from depending on the user's selected theme.
+const animalWordBank =['DOG', 'CAT', 'MOUSE', 'HORSE', 'ELEPHANT', 'BEAR', 'ALLIGATOR', 'LION', 'SCORPION', 'LIZARD', 'SNAKE', 'SPIDER', 'TURTLE', 'ZEBRA', 'GIRAFFE', 'MONKEY', 'OWL', 'BUTTERFLY', 'DOLPHIN', 'WHALE', 'SHARK', 'EAGLE', 'MOOSE', 'BEAVER', 'OTTER']
+const fullWordBank = [japanWordBank, animalWordBank]
 let selectedWord = '' //this stores the word the user is trying to guess. I suppose it could be named better
 let guessWord = [] //as the user guesses letters, the correct letters will be stored in this array
 let correctWord = ''//in order to check the selectedWord with guessWord, we need to convert guessWord into a string. this variable holds that string.
@@ -43,7 +45,7 @@ const replay = () =>{//this prompt is used to play the game again if the user wa
   rl.question('Play again? Y or N: ', (restart) => { 
     const playAgain = restart.toUpperCase()
      if(playAgain == "Y"){
-       getRandomWord(wordBank)
+       getRandomWord(fullWordBank[0])
        restartFields()
        getPrompt()
      }
@@ -119,6 +121,7 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
     
 }
 
-getRandomWord(wordBank);//initial call to select word from wordbank. we only need to run this function once to get the random selectedWord. if placed in getPrompt function, selectedWord will continuously randomize after each guess
+
+getRandomWord(fullWordBank[0]);//initial call to select word from wordbank. we only need to run this function once to get the random selectedWord. if placed in getPrompt function, selectedWord will continuously randomize after each guess
 getPrompt()//initial call to start the game in terminal
 
