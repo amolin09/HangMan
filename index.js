@@ -10,10 +10,10 @@ let selectedWordBank = 0
 let selectedWord = '' //this stores the word the user is trying to guess. I suppose it could be named better
 let guessWord = [] //as the user guesses letters, the correct letters will be stored in this array
 let usedLetters = []//as the user guesses letters, we don't want them to accidentally guess a previous letter. This array stores the letters the user enters and compares them to future guesses
-let turns = 6// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
+let lives = 6// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
 let gameOver = false//determines if the game is over either by winning or losing. prevents user from continuing to guess after the game is over. streamlines UX
 
-const hangManPictreElement = document.getElementById('hang-man-lives')
+const hangManPictreElement = document.getElementById('hang-man-lives')//setting variables to existing but empty divs in the DOM
 const turnsCounterDiv = document.getElementById('turns-div')
 const winnerDivElement = document.getElementById('win-or-lose-div')
 const feedBackDiv = document.getElementById('feedback-div')
@@ -31,13 +31,13 @@ const getRandomWord = (wordsArray) =>{// function used to select a word from the
   }  
 }
 
-const getWordArray = () =>{
+const getWordArray = () =>{//if we want to use all the word banks, this randomizes which array to use and getRandomWord will choose the word within that array
   const randomBankIndex = getRandomInt(0, fullWordBank.length)
   selectedWordBank = randomBankIndex
 }
 
 const restartFields = () =>{//if replaying the game, the original arrays and variables need to be reset so that they don't carry over to the next game
-  turns = 6
+  lives = 6
   gameOver = false
   usedLetters = []
   guessWord = []
@@ -55,7 +55,7 @@ const restartFields = () =>{//if replaying the game, the original arrays and var
 
 }
 
-const replay = () =>{//this prompt is used to play the game again if the user wants. I had to call this twice so I thought it would look cleaner with all functions called in a single function
+const replay = () =>{//this prompt is used to play the game again if the user wants. 
     
       getWordArray() 
       getRandomWord(fullWordBank[selectedWordBank])
@@ -64,46 +64,45 @@ const replay = () =>{//this prompt is used to play the game again if the user wa
 
 }
 
-const setHangManPicture = () =>{
-  if(turns == 6){
+const setHangManPicture = () =>{//changes the picture depeding on how many lives the user has left
+  if(lives == 6){
     hangManPictreElement.src ="./Images/Hangman-0.png"
   }
-  else if(turns == 5){
+  else if(lives == 5){
     hangManPictreElement.src ="./Images/Hangman-1.jpg"
   }
-  else if(turns == 4){
+  else if(lives == 4){
     hangManPictreElement.src ="./Images/Hangman-2.jpg"
   }
-  else if(turns == 3){
+  else if(lives == 3){
     hangManPictreElement.src ="./Images/Hangman-3.jpg"
   }
-  else if(turns == 2){
+  else if(lives == 2){
     hangManPictreElement.src ="./Images/Hangman-4.jpg"
   }
-  else if(turns == 1){
+  else if(lives == 1){
     hangManPictreElement.src ="./Images/Hangman-5.jpg"
   }
-  else if(turns == 0){
+  else if(lives == 0){
     hangManPictreElement.src ="./Images/Hangman-6.jpg"
   }
 }
 
-const setTurnsCounter = ()=>{
+const setLivesCounter = ()=>{//displays how many lives the user has left in the DOM. 
   
   while(turnsCounterDiv.hasChildNodes()){
     turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
   }
   const turnsCounterElement = document.createElement('span')
-  const turnsText = document.createTextNode('Turns left: ' + turns)
+  const turnsText = document.createTextNode('Lives left: ' + lives)
   turnsCounterElement.appendChild(turnsText)
   turnsCounterDiv.appendChild(turnsCounterElement)
 }
 
-const printBoard = () =>{// prints out the board on terminal, not needed when we switch to DOM
-  document.getElementById('user-guess').value = ''
+const printBoard = () =>{//displays the word in progress, the hang man picture and lives counter
   const wordDisplayElement = document.getElementById('word')
   setHangManPicture()
-  setTurnsCounter()
+  setLivesCounter()
 
   while(wordDisplayElement.hasChildNodes()){
     wordDisplayElement.removeChild(wordDisplayElement.firstChild)
@@ -111,13 +110,14 @@ const printBoard = () =>{// prints out the board on terminal, not needed when we
 
   for(let i = 0; i < selectedWord.length; i++){
     const letterSpaceElement = document.createElement('span')
+    document.getElementById("word").className = "word-class"
     let letterSpaceValue = document.createTextNode(guessWord[i])
     letterSpaceElement.appendChild(letterSpaceValue)
     wordDisplayElement.appendChild(letterSpaceElement)
   }
 }
 
-const setFeedBackDisplay = (text) => {
+const setFeedBackDisplay = (text) => {//displays a message depending if the letter is valid, used already, correct or incorrect
   resetFeedBackDisplay()
   const feedBackElement = document.createElement('span')
   feedBackElement.appendChild(text)
@@ -125,17 +125,32 @@ const setFeedBackDisplay = (text) => {
   
 }
 
-const resetFeedBackDisplay = () =>{
+const resetFeedBackDisplay = () =>{//removes the feedback display so that they do not stack on top of each other
   while(feedBackDiv.hasChildNodes()){
     feedBackDiv.removeChild(feedBackDiv.firstChild)
   }
 }
 
+function invalidCharacters (str){//function to check if the a string has special characters or numbers
+  const forbiddenCharacters = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+  const forbiddenNumbers = /\d/
+  const hasSpecialCharacters = forbiddenCharacters.test(str)
+  const hasNumbers = forbiddenNumbers.test(str)
+  if(hasSpecialCharacters||hasNumbers){
+    return true
+  }
+  else{
+    return false
+  }
+  
+}
+
 const hangMan = (guess) =>{
   let upperGuess = guess.toUpperCase()
+  let checkForInvalidCharacters = invalidCharacters(upperGuess)
   console.log('\n------------------------------------------\n')
 
-  if(upperGuess.length > 1 || upperGuess.length < 1){ // prevents the user from entering an input longer than a single character
+  if(upperGuess.length > 1 || upperGuess.length < 1 || checkForInvalidCharacters){ // prevents the user from entering an input longer than a single character or less than a single character. also checks to make sure the guess only has letters
     let feedBackText = document.createTextNode('Not a valid guess. Try again')
     setFeedBackDisplay(feedBackText)
     console.log('Not a valid guess. Try again')
@@ -167,26 +182,27 @@ const hangMan = (guess) =>{
       let feedBackText = document.createTextNode('Wrong guess! Try again!')
       setFeedBackDisplay(feedBackText)
       console.log('Wrong guess! Try again!')
-      turns--
+      lives--
 
   }
   
     
 }
 
-const winOrLose = (text) =>{
-  const winnerDivElement = document.getElementById('win-or-lose-div')
+const winOrLose = (text) =>{//displays if the user gets the correct word or runs out of lives
+  
   const winnerTextElement = document.createElement('span')
   winnerTextElement.appendChild(text)
   winnerDivElement.appendChild(winnerTextElement)
 }
 
 
-const getPrompt = () =>  { // initial function to start the game. I recommend having a start button to call this function so that the game doesn't start immediately when the page loads. 
+const submitLetter = () =>  { // initial function to start the game. I recommend having a start button to call this function so that the game doesn't start immediately when the page loads. 
   
   if(!gameOver){//as long as gameOver isn't true, the game continues on
       let userGuess = document.getElementById('user-guess').value
       hangMan(userGuess);
+      document.getElementById('user-guess').value = '' //resets he input field so that the user doesn't have to backspace or delete the previous letter
       printBoard()
       let correctWord = guessWord.join('')//converts guessWord array into a string with no commas
 
@@ -197,18 +213,20 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
           turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
         }
         resetFeedBackDisplay()
+        document.getElementById("win-or-lose-div").className = "win-text"//the div's class name changes so we can have a different style for the text if the user wins
         winOrLose(winnerText)
         console.log('You got the right word!')
         gameOver = true
       }
     
-      else if(turns < 1){//runs out of lives, game ends, selectedWord is displyed
+      else if(lives < 1){//runs out of lives, game ends, selectedWord is displyed
 
         let gameOverText = document.createTextNode('You lose! The answer was: ' + selectedWord)
         while(turnsCounterDiv.hasChildNodes()){
           turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
         }
         resetFeedBackDisplay()
+        document.getElementById("win-or-lose-div").className = "lose-text"//the div's class name changes so we can have a different style for the text if the user loses
         winOrLose(gameOverText)
         console.log('You ran out of lives! The answer was: ' + selectedWord )
         gameOver = true
@@ -217,6 +235,6 @@ const getPrompt = () =>  { // initial function to start the game. I recommend ha
     
 }
 
-  getWordArray()
+  // getWordArray() uncomment me if you want to use all the word banks, otherwise, only the Japan theme will pop up
   getRandomWord(fullWordBank[selectedWordBank])
   printBoard()
