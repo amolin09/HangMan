@@ -13,7 +13,7 @@ let usedLetters = []//as the user guesses letters, we don't want them to acciden
 let lives = 6// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
 let gameOver = false//determines if the game is over either by winning or losing. prevents user from continuing to guess after the game is over. streamlines UX
 
-const hangManPictreElement = document.getElementById('hang-man-lives')//setting variables to existing but empty divs in the DOM
+const hangManPictreElement = document.getElementById('hang-man-picture')//setting variables to existing but empty divs in the DOM
 const turnsCounterDiv = document.getElementById('turns-div')
 const winnerDivElement = document.getElementById('win-or-lose-div')
 const feedBackDiv = document.getElementById('feedback-div')
@@ -69,19 +69,19 @@ const setHangManPicture = () =>{//changes the picture depeding on how many lives
     hangManPictreElement.src ="./Images/Hangman-0.png"
   }
   else if(lives == 5){
-    hangManPictreElement.src ="./Images/Hangman-1.jpg"
+    hangManPictreElement.src ="./Images/Hangman-1.png"
   }
   else if(lives == 4){
-    hangManPictreElement.src ="./Images/Hangman-2.jpg"
+    hangManPictreElement.src ="./Images/Hangman-2.png"
   }
   else if(lives == 3){
-    hangManPictreElement.src ="./Images/Hangman-3.jpg"
+    hangManPictreElement.src ="./Images/Hangman-3.png"
   }
   else if(lives == 2){
-    hangManPictreElement.src ="./Images/Hangman-4.jpg"
+    hangManPictreElement.src ="./Images/Hangman-4.png"
   }
   else if(lives == 1){
-    hangManPictreElement.src ="./Images/Hangman-5.jpg"
+    hangManPictreElement.src ="./Images/Hangman-5.png"
   }
   else if(lives == 0){
     hangManPictreElement.src ="./Images/Hangman-6.jpg"

@@ -1,31 +1,47 @@
+body {
+  background-color: #fffcf2;
+}
+
 .main-content {
   margin: auto;
+  height: 100%;
+  width: 800px;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  margin-top: 70px;
+  align-items: center;
   background-image: url("./Images/Background.jpg");
   background-repeat: no-repeat;
-  height: 700px;
-  width: 700px;
   background-size: cover;
 }
 
-.hang-man-picture {
-  padding-top: 60px;
-}
-
-.title {
+#title {
   display: flex;
   justify-content: center;
-  padding-top: ;
+  padding-top: 25px;
 }
 
-.title img {
+#title img {
   width: 80%;
 }
 
-span {
-  font-size: 100px;
+#turns-div {
+  color: white;
+  text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+  font-size: 50px;
+}
+
+#feedback-div, #win-or-lose-div {
+  color: white;
+  text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+  font-size: 40px;
+}
+
+#word span {
+  color: white;
+  font-size: 80px;
   margin: 20px;
+}
+
+#user-input-div {
+  margin: 20px 0;
 }
