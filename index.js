@@ -84,7 +84,7 @@ const setHangManPicture = () =>{//changes the picture depeding on how many lives
     hangManPictreElement.src ="./Images/Hangman-5.png"
   }
   else if(lives == 0){
-    hangManPictreElement.src ="./Images/Hangman-6.jpg"
+    hangManPictreElement.src ="./Images/Hangman-6.png"
   }
 }
 
