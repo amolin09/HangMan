@@ -1,38 +1,39 @@
 
 const japanWordBank = ['NINJA', 'SAMURAI', 'GEISHA', 'SUSHI', 'ISLAND', 'SUMO', 'RAMEN', 'CHOPSTICKS', 'KIMONO', 'ANIME', 'ORIGAMI', 'RICE', 'KATANA', 'MOUNTAINS', 'SHOGUN', 'NINTENDO', 'SEGA', 'TOKYO', 'HAIKU', 'SHOGI']  //if we want different themes, I will have multiple arrays for the word banks. we'll change which array to pick the word from depending on the user's selected theme.
-const animalWordBank = ['DOG', 'CAT', 'MOUSE', 'HORSE', 'ELEPHANT', 'BEAR', 'ALLIGATOR', 'LION', 'SCORPION', 'LIZARD', 'SNAKE', 'SPIDER', 'TURTLE', 'ZEBRA', 'GIRAFFE', 'MONKEY', 'OWL', 'BUTTERFLY', 'DOLPHIN', 'WHALE', 'SHARK', 'EAGLE', 'MOOSE', 'BEAVER', 'OTTER']
-const schoolWordBank = ['DESK', 'COMPUTER', 'PAPER', 'STAPLER', 'LUNCH', 'PRINTER', 'PENCIL', 'HOMEWORK', 'TEACHER', 'STUDENT', 'GYMNASIUM', 'CAFETERIA', 'BAND', 'ART', 'MATH', 'HISTORY', 'SCIENCE', 'THEATER', 'SPORTS', 'LIBRARY', 'OFFICE', 'RESTROOM']
-const spaceWordBank = ['EARTH', 'MARS', 'MERCURY', 'MOON', 'VENUS', 'SUN', 'GALAXY', 'SATELLITE', 'JUPITER', 'SATURN', 'NEPTUNE', 'NEBULA', 'SUPERNOVA', 'PULSAR', 'BLACKHOLE', 'STAR', 'PLUTO', 'ASTEROID', 'COMET', 'SPACESHIP']
-const foodWordBank = ['PIZZA', 'HAMBURGER', 'SANDWICH', 'TACOS', 'SPAGHETTI', 'LASAGNA', 'CHICKEN', 'STEAK', 'SALMON', 'CASSEROLE', 'TURKEY', 'SALAD', 'CAKE', 'SOUP']
-const fullWordBank = [japanWordBank, animalWordBank, schoolWordBank, spaceWordBank, foodWordBank]
+const animalWordBank = ['DOG', 'CAT', 'MOUSE', 'HORSE', 'ELEPHANT', 'BEAR', 'ALLIGATOR', 'LION', 'SCORPION', 'LIZARD', 'SNAKE', 'SPIDER', 'TURTLE', 'ZEBRA', 'GIRAFFE', 'MONKEY', 'OWL', 'BUTTERFLY', 'DOLPHIN', 'WHALE', 'SHARK', 'EAGLE', 'MOOSE', 'BEAVER', 'OTTER'];
+const schoolWordBank = ['DESK', 'COMPUTER', 'PAPER', 'STAPLER', 'LUNCH', 'PRINTER', 'PENCIL', 'HOMEWORK', 'TEACHER', 'STUDENT', 'GYMNASIUM', 'CAFETERIA', 'BAND', 'ART', 'MATH', 'HISTORY', 'SCIENCE', 'THEATER', 'SPORTS', 'LIBRARY', 'OFFICE', 'RESTROOM'];
+const spaceWordBank = ['EARTH', 'MARS', 'MERCURY', 'MOON', 'VENUS', 'SUN', 'GALAXY', 'SATELLITE', 'JUPITER', 'SATURN', 'NEPTUNE', 'NEBULA', 'SUPERNOVA', 'PULSAR', 'BLACKHOLE', 'STAR', 'PLUTO', 'ASTEROID', 'COMET', 'SPACESHIP'];
+const foodWordBank = ['PIZZA', 'HAMBURGER', 'SANDWICH', 'TACOS', 'SPAGHETTI', 'LASAGNA', 'CHICKEN', 'STEAK', 'SALMON', 'CASSEROLE', 'TURKEY', 'SALAD', 'CAKE', 'SOUP'];
+const fullWordBank = [japanWordBank, animalWordBank, schoolWordBank, spaceWordBank, foodWordBank];
 
-let selectedWordBank = 0
-let selectedWord = '' //this stores the word the user is trying to guess. I suppose it could be named better
-let guessWord = [] //as the user guesses letters, the correct letters will be stored in this array
-let usedLetters = []//as the user guesses letters, we don't want them to accidentally guess a previous letter. This array stores the letters the user enters and compares them to future guesses
-let lives = 6// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
-let gameOver = false//determines if the game is over either by winning or losing. prevents user from continuing to guess after the game is over. streamlines UX
+let selectedWordBank = 0;
+let selectedWord = ''; //this stores the word the user is trying to guess. I suppose it could be named better
+let guessedLetters = []; //as the user guesses letters, the correct letters will be stored in this array
+let usedLetters = [];//as the user guesses letters, we don't want them to accidentally guess a previous letter. This array stores the letters the user enters and compares them to future guesses
+let lives = 6;// amount of tries the user has. decreases for every incorrect letter guessed. once it reaches 0, the game ends
+let gameOver = false;//determines if the game is over either by winning or losing. prevents user from continuing to guess after the game is over. streamlines UX
 
-const hangManPictreElement = document.getElementById('hang-man-picture')//setting variables to existing but empty divs in the DOM
-const turnsCounterDiv = document.getElementById('turns-div')
-const winnerDivElement = document.getElementById('win-or-lose-div')
-const feedBackDiv = document.getElementById('feedback-div')
+const hangManImg = document.getElementById('hang-man-picture');//setting variables to existing but empty divs in the DOM
+const turnsCounterDiv = document.getElementById('turns-div');
+const winnerDiv = document.getElementById('win-or-lose-div');
+const feedBackDiv = document.getElementById('feedback-div');
 
-const getRandomInt = (min, max) => { // function used to create random integers
-  return Math.floor(Math.random() * (max - min)) + min;
+const getRandomInt = (max) => { // function used to create random integers
+  //Math.random gives you a number ranging from 0-.999
+  return Math.floor(Math.random() * max);
 }
 
-const getRandomWord = (wordsArray) =>{// function used to select a word from the wordBank array. uses the random generated number to determine index of the wordBank array
-  const randomIndex = getRandomInt(0, wordsArray.length);
-  selectedWord = wordsArray[randomIndex]
+const getRandomWord = (wordsArray) =>{// function used to select a word from the wordBank array. Uses the random generated number to determine index of the wordBank array
+  const randomIndex = getRandomInt(wordsArray.length);
+  selectedWord = wordsArray[randomIndex];
 
   for(let i = 0; i < selectedWord.length; i++){
-    guessWord[i] = "_"
+    guessedLetters[i] = "_";
   }  
 }
 
 const getWordArray = () =>{//if we want to use all the word banks, this randomizes which array to use and getRandomWord will choose the word within that array
-  const randomBankIndex = getRandomInt(0, fullWordBank.length)
+  const randomBankIndex = getRandomInt(fullWordBank.length)
   selectedWordBank = randomBankIndex
 }
 
@@ -40,16 +41,16 @@ const restartFields = () =>{//if replaying the game, the original arrays and var
   lives = 6
   gameOver = false
   usedLetters = []
-  guessWord = []
+  guessedLetters = []
 
   for(let i = 0; i < selectedWord.length; i++){
-    guessWord[i] = "_"
+    guessedLetters[i] = "_"
   }
   while(turnsCounterDiv.hasChildNodes()){
     turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
   }
-  while(winnerDivElement.hasChildNodes()){
-    winnerDivElement.removeChild(winnerDivElement.firstChild)
+  while(winnerDiv.hasChildNodes()){
+    winnerDiv.removeChild(winnerDiv.firstChild)
   }
   resetFeedBackDisplay()
 
@@ -60,31 +61,31 @@ const replay = () =>{//this prompt is used to play the game again if the user wa
       getWordArray() 
       getRandomWord(fullWordBank[selectedWordBank])
       restartFields()
-      printBoard()
+      printDisplay()
 
 }
 
-const setHangManPicture = () =>{//changes the picture depeding on how many lives the user has left
+const setHangManPicture = () =>{//changes the picture depending on how many lives the user has left
   if(lives == 6){
-    hangManPictreElement.src ="./Images/Hangman-0.png"
+    hangManImg.src ="./Images/Hangman-0.png"
   }
   else if(lives == 5){
-    hangManPictreElement.src ="./Images/Hangman-1.png"
+    hangManImg.src ="./Images/Hangman-1.png"
   }
   else if(lives == 4){
-    hangManPictreElement.src ="./Images/Hangman-2.png"
+    hangManImg.src ="./Images/Hangman-2.png"
   }
   else if(lives == 3){
-    hangManPictreElement.src ="./Images/Hangman-3.png"
+    hangManImg.src ="./Images/Hangman-3.png"
   }
   else if(lives == 2){
-    hangManPictreElement.src ="./Images/Hangman-4.png"
+    hangManImg.src ="./Images/Hangman-4.png"
   }
   else if(lives == 1){
-    hangManPictreElement.src ="./Images/Hangman-5.png"
+    hangManImg.src ="./Images/Hangman-5.png"
   }
   else if(lives == 0){
-    hangManPictreElement.src ="./Images/Hangman-6.png"
+    hangManImg.src ="./Images/Hangman-6.png"
   }
 }
 
@@ -99,7 +100,7 @@ const setLivesCounter = ()=>{//displays how many lives the user has left in the 
   turnsCounterDiv.appendChild(turnsCounterElement)
 }
 
-const printBoard = () =>{//displays the word in progress, the hang man picture and lives counter
+const printDisplay = () =>{//displays the word in progress, the hang man picture and lives counter
   const wordDisplayElement = document.getElementById('word')
   setHangManPicture()
   setLivesCounter()
@@ -111,7 +112,7 @@ const printBoard = () =>{//displays the word in progress, the hang man picture a
   for(let i = 0; i < selectedWord.length; i++){
     const letterSpaceElement = document.createElement('span')
     document.getElementById("word").className = "word-class"
-    let letterSpaceValue = document.createTextNode(guessWord[i])
+    let letterSpaceValue = document.createTextNode(guessedLetters[i])
     letterSpaceElement.appendChild(letterSpaceValue)
     wordDisplayElement.appendChild(letterSpaceElement)
   }
@@ -167,7 +168,7 @@ const hangMan = (guess) =>{
       for(let i = 0; i < selectedWord.length; i++){//iterating through selectedWord, comparing each letter to the guessed letter
      
         if(selectedWord[i] == upperGuess){//checks if current index of selectedWord matches the guess
-        guessWord[i] = upperGuess//if so, the guessed letter gets added to guessWord array, matching the same index in selectedWord
+        guessedLetters[i] = upperGuess//if so, the guessed letter gets added to guessWord array, matching the same index in selectedWord
         usedLetters.push(upperGuess)//guessed letter getting added to usedLetters array
         }
       
@@ -185,15 +186,13 @@ const hangMan = (guess) =>{
       lives--
 
   }
-  
-    
 }
 
 const winOrLose = (text) =>{//displays if the user gets the correct word or runs out of lives
   
-  const winnerTextElement = document.createElement('span')
-  winnerTextElement.appendChild(text)
-  winnerDivElement.appendChild(winnerTextElement)
+  const winnerTextElement = document.createElement('span');
+  winnerTextElement.appendChild(text);
+  winnerDiv.appendChild(winnerTextElement);
 }
 
 
@@ -203,20 +202,20 @@ const submitLetter = () =>  { // initial function to start the game. I recommend
       let userGuess = document.getElementById('user-guess').value
       hangMan(userGuess);
       document.getElementById('user-guess').value = '' //resets he input field so that the user doesn't have to backspace or delete the previous letter
-      printBoard()
-      let correctWord = guessWord.join('')//converts guessWord array into a string with no commas
+      printDisplay()
+      let correctWord = guessedLetters.join('')//converts guessWord array into a string with no commas
 
       if(correctWord == selectedWord){//conmpares correctWord to see if it matches the selectedWord. if so, the game is won
         
         let winnerText = document.createTextNode('You got the right word!')
         while(turnsCounterDiv.hasChildNodes()){
-          turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
+          turnsCounterDiv.removeChild(turnsCounterDiv.firstChild);
         }
-        resetFeedBackDisplay()
+        resetFeedBackDisplay();
         document.getElementById("win-or-lose-div").className = "win-text"//the div's class name changes so we can have a different style for the text if the user wins
-        winOrLose(winnerText)
-        console.log('You got the right word!')
-        gameOver = true
+        winOrLose(winnerText);
+        console.log('You got the right word!');
+        gameOver = true;
       }
     
       else if(lives < 1){//runs out of lives, game ends, selectedWord is displyed
@@ -225,16 +224,16 @@ const submitLetter = () =>  { // initial function to start the game. I recommend
         while(turnsCounterDiv.hasChildNodes()){
           turnsCounterDiv.removeChild(turnsCounterDiv.firstChild)
         }
-        resetFeedBackDisplay()
+        resetFeedBackDisplay();
         document.getElementById("win-or-lose-div").className = "lose-text"//the div's class name changes so we can have a different style for the text if the user loses
-        winOrLose(gameOverText)
-        console.log('You ran out of lives! The answer was: ' + selectedWord )
-        gameOver = true
+        winOrLose(gameOverText);
+        console.log('You ran out of lives! The answer was: ' + selectedWord );
+        gameOver = true;
       }
   } 
     
 }
 
   // getWordArray() uncomment me if you want to use all the word banks, otherwise, only the Japan theme will pop up
-  getRandomWord(fullWordBank[selectedWordBank])
-  printBoard()
+  getRandomWord(fullWordBank[selectedWordBank]);
+  printDisplay();
